@@ -3,9 +3,11 @@
 #include "Person.h"
 using namespace std;
 
-//Protoypes
+//Protoypes ------------------------------------------------------------------------------
 void showDatabase(vector<Person> db);
 void printYoungPeople(vector<Person>& db);
+void findOldest(vector<Person>& db, int& oldestId, int& idLowerBound, int& idUpperBound);
+void findElderly(vector<Person>& db, int& oldestAge, int& oldestCount);
 
 
 int main()
@@ -38,13 +40,45 @@ int main()
 
     inFile.close();
 
-    //Output
+    //Query 1 - Young people (age below average)
     showDatabase(db);
     printYoungPeople(db);
-    return 0;
+
+    //Query 2 - Oldest among a range of ids
+    int oldestId = 0, idLowerBound=100, idUpperBound=175;
+    findOldest(db, oldestId, idLowerBound, idUpperBound);
+    cout << "\nQuery 2 \n";
+	if (oldestId == -1)
+	{
+        cout << "No person found in the range [" << idLowerBound << ", " << idUpperBound << "]" << endl;
+	}
+    else {
+
+        cout << "Oldest person in the range [" << idLowerBound << ", "
+            << idUpperBound
+            << "] has id: " << oldestId
+            << endl;
+        //Display Oldest Person Object
+        for (Person p : db)
+        {
+            if (p.getId() == oldestId)
+            {
+                cout << p.toString() << endl;
+                break;
+            }
+        }
+    }
+    
+
+    //Query 3 - Count of oldest people
+    int oldestAge = 0, oldestCount = 0;
+    findElderly(db, oldestAge, oldestCount);
+    cout << "\nQuery 3\nOldest age is: " << oldestAge << " years" << endl;
+    cout << "Number of oldest person(s): " << oldestCount << endl;
+    
 }
 
-//Functions
+//User-defined Functions -------------------------------------------------------------------
 void printYoungPeople(vector<Person>& db)
 {
     //Check - Empty database?
@@ -65,7 +99,7 @@ void printYoungPeople(vector<Person>& db)
 	averageAge = totalAge / db.size();
 
 	//Report average age
-	cout << "\nPersons younger than the average age (" << averageAge << "):" << endl;
+	cout << "\nQuery 1\nPersons younger than the average age (" << averageAge << "):" << endl;
 	
 	//Young people printout
 	for (Person p : db)
@@ -76,7 +110,7 @@ void printYoungPeople(vector<Person>& db)
 		}
 	}
 }
-
+//--------------------------------------------------------------------------------------------
 void showDatabase(vector<Person> db)
 {
 	//Check if database is empty
@@ -93,4 +127,50 @@ void showDatabase(vector<Person> db)
 		cout << p.toString() << endl;
 	}
 	cout << endl;
+}
+//--------------------------------------------------------------------------------------------
+void findOldest(vector<Person>& db, int& oldestId, int& idLowerBound, int& idUpperBound)
+{
+
+    //Find the oldest person in the range [idLowerBound, idUpperBound]
+    int oldestAge = -1;
+    int countOlder = 0;
+
+    for (Person p : db)
+    {
+        if (p.getId() >= idLowerBound && p.getId() <= idUpperBound)
+        {
+            if (p.getAge() > oldestAge)
+            {
+                oldestAge = p.getAge();
+                oldestId  = p.getId();
+            }
+        }
+    }
+
+}
+
+//--------------------------------------------------------------------------------------------
+void findElderly(vector<Person>& db, int& oldestAge, int& oldestCount)
+{
+
+    //Find the count of oldest person(s)
+    oldestAge  = db[0].getAge();
+    int countOlder = 1;
+
+    for (Person p : db)
+    {
+
+            if (p.getAge() > oldestAge)
+            {
+                oldestAge = p.getAge();
+                oldestCount = 1;
+            }
+            else if (p.getAge() == oldestAge)
+            {
+                oldestCount++;
+            }
+      
+    }
+
 }

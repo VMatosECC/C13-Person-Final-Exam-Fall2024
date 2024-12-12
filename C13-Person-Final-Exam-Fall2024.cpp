@@ -134,7 +134,7 @@ void findOldest(vector<Person>& db, int& oldestId, int& idLowerBound, int& idUpp
 
     //Find the oldest person in the range [idLowerBound, idUpperBound]
     int oldestAge = 0;
-    int oldestId = -1
+    oldestId = -1
 
     for (Person p : db)
     {
